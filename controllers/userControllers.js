@@ -99,7 +99,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
     secure: true,
     auth: {
       user: "kopolyzos99@gmail.com",
-      pass: "okdvwgmhlznxiyhi",
+      pass: "kalokairaki_vradino_banaki",
     },
   });
 
