@@ -5,7 +5,7 @@ const {
   signupHandler,
   forgetPassword,
   resetPassword,
-} = require("../controllers/userControllers");
+} = require("../controllers/userController");
 
 const router = express.Router();
 

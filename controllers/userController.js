@@ -51,7 +51,7 @@ const loginHandler = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({
-    token: await createToken(user, 120),
+    token: await createToken(user, 600),
   });
 });
 
@@ -98,8 +98,8 @@ const forgetPassword = asyncHandler(async (req, res) => {
     port: 465,
     secure: true,
     auth: {
-      user: "kopolyzos99@gmail.com",
-      pass: "kalokairaki_vradino_banaki",
+      user: process.env.NODEMAILER_EMAIL,
+      pass: process.env.NODEMAILER_PASSWORD,
     },
   });
 

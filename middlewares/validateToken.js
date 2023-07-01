@@ -25,13 +25,21 @@ module.exports = asyncHandler(async (req, res, next) => {
   path[path.length - 1] = "controllers";
 
   const secret = await fs.readFile(path.join("/") + "/secret.public");
-  var decoded = await jwt.verify(token, secret);
 
-  if (!decoded) {
-    res.status(400);
-    throw new Error("Token is invalid!");
-  }
+  await jwt.verify(token, secret, (err, decoded) => {
+    var expiredErr = err instanceof jwt.TokenExpiredError;
+    if (err && expiredErr) {
+      res.status(403);
+      throw new Error("Token is expired!");
+    }
 
-  req.user = decoded.user;
+    if (err && !expiredErr) {
+      res.status(403);
+      throw new Error("Token is invalid!");
+    }
+
+    req.user = decoded.user;
+  });
+
   next();
 });
