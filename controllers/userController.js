@@ -2,13 +2,10 @@ const asyncHandler = require("express-async-handler");
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const fs = require("fs").promises;
 const nodemailer = require("nodemailer");
 
 const createToken = asyncHandler(async (user, min) => {
-  const secret = await fs.readFile(__dirname + "/secret.public", {
-    encoding: "utf-8",
-  });
+  const secret = process.env.SECRET;
 
   return jwt.sign(
     {

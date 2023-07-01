@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const fs = require("fs").promises;
 const asyncHandler = require("express-async-handler");
 
 module.exports = asyncHandler(async (req, res, next) => {
@@ -21,10 +20,7 @@ module.exports = asyncHandler(async (req, res, next) => {
     throw new Error("No token found!");
   }
 
-  var path = __dirname.split("/");
-  path[path.length - 1] = "controllers";
-
-  const secret = await fs.readFile(path.join("/") + "/secret.public");
+  const secret = process.env.SECRET;
 
   await jwt.verify(token, secret, (err, decoded) => {
     var expiredErr = err instanceof jwt.TokenExpiredError;

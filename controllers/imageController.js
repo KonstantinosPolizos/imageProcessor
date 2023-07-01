@@ -1,6 +1,5 @@
 const asyncHandler = require("express-async-handler");
 const https = require("node:https");
-const sharp = require("sharp");
 const { PrismaClient } = require("@prisma/client");
 
 const readHTTPImage = async (imageURL) => {
