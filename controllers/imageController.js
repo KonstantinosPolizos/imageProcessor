@@ -2,13 +2,13 @@ const asyncHandler = require("express-async-handler");
 const https = require("node:https");
 const { PrismaClient } = require("@prisma/client");
 
-const readHTTPImage = async (imageURL) => {
+const readHTTPImage = (imageURL) => {
   return new Promise((resolve, reject) => {
     https.get(imageURL, resolve).on("error", reject);
   });
 };
 
-const bufferizeHTTPImage = async (response) => {
+const bufferizeHTTPImage = (response) => {
   return new Promise((resolve, reject) => {
     var chunks = [];
 
