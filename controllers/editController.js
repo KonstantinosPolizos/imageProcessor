@@ -41,10 +41,11 @@ const editResize = asyncHandler(async (req, res) => {
 
   let cacheResult = await redisClient.get("rgbImg");
   let rgbImg;
+
   if (cacheResult) {
     rgbImg = JSON.parse(cacheResult);
-    //json don't supports Buffer
-    rgbImg.data = Buffer.from(rgbImg.data);
+
+    rgbImg.data = Buffer.from(rgbImg.data); // JSON doesn't supports Buffer
   } else {
     rgbImg = await prisma.images.findUnique({
       where: {
@@ -57,7 +58,8 @@ const editResize = asyncHandler(async (req, res) => {
       throw new Error("No image found!");
     }
 
-    await redisClient.set("rgbImg", JSON.stringify(rgbImg));
+    // correct approach but in our case we need the edited picture to be saved
+    // await redisClient.set("rgbImg", JSON.stringify(rgbImg));
   }
 
   const workerImg = await editWorker(rgbImg.data, width, height);
@@ -67,14 +69,13 @@ const editResize = asyncHandler(async (req, res) => {
     throw new Error("Worker image gone wrong");
   }
 
-  const addResizedImg = await prisma.images.update({
-    where: {
-      id: parseInt(id),
-    },
-    data: {
-      data: Buffer.from(workerImg),
-    },
-  });
+  delete rgbImg.data; // Delete from the rgbImage the previous data
+
+  rgbImg.data = Buffer.from(workerImg); // Bufferized the new edited one
+
+  await redisClient.set("rgbImg", JSON.stringify(rgbImg), {
+    EX: 30,
+  }); // Cache it
 
   res.status(200).json({
     message: "ok edit",
